@@ -12,16 +12,16 @@
 	   <p>&nbsp;</p>  
 	</div>
 	<div class="tabs">
-      <a class="tab-item all-off" href="#">
+      <a class="tab-item all-off">
         All Off
       </a>
-      <a class="tab-item icon-left all-on" href="#">
+      <a class="tab-item icon-left all-on">
         All On
       </a>
-      <a class="tab-item all-default" href="#">
+      <a class="tab-item all-default">
         Default
       </a>
-      <a class="tab-item hue-groups" href="#">
+      <a class="tab-item hue-groups">
         hueGroups
       </a>
     </div>
@@ -29,17 +29,17 @@
 
 <template name="hueGroupsList">
   <div class="list list-inset" id="hue-groups-list">
-    <h2>Groups</h2>
+    <h3>Edit Groups</h3>
     {{#if hueGroups}}
       {{#each hueGroups}}
         <div class="panel">
           <div class="item item-divider" data-id="{{id}}">
-              Name {{name}}
+              {{name}}
           </div>
           <div class="item range range-calm">
             <div class="button-bar">
               <a class="button edit-group" data-id="{{id}}">Edit</a>
-              <a class="button button-assertive delete-group">Delete</a>
+              <a class="button button-assertive delete-group data-id={{id}}">Delete</a>
             </div>              
           </div>
         </div>
@@ -50,15 +50,15 @@
       </div>
       
       <div class="button-bar">
-        <a class="button button-calm create-group">Create One</a>
+        <a class="button button-calm">Create One</a>
         <a class="button return-home"><i class="icon ion-ios-close-outline"></i></a>
       </div>
     {{/if}}
     <p>&nbsp;</p>
     <div class="padding">
-      <button class="button button-block button-balanced icon-right">
-        Add a new group<i class="ion-ios-plus-outline"></i>
-      </button>
+      <a class="button new-group button-block button-balanced icon-right">
+        Add a new group <i class="ion-ios-plus-outline"></i>
+      </a>
     </div>  
   </div>
 </template>
@@ -66,19 +66,22 @@
 <template name="hueForm">
     <div class="content has-header">
       <div class="item item-divider">
-        Hue Group Name
-        </div>
+        Hue Group Information
+      </div>
       <div class="list">
-        <label class="item item-input item-floating-label">
+        <label class="item item-input item-stacked-label">
           <span class="input-label">Hue Group Name</span>
-          <input type="text" placeholder="Hue Group Name" value="{{#with group}}{{name}}{{/with}}">
+          <input type="text" name="groupName" placeholder="Hue Group Name"  value="{{#with group}}{{name}}{{/with}}">
         </label>
+      <div class="item item-divider">
+        Group Lights
+      </div>
       <ul>
       {{#each lights}}
         <li class="item item-toggle">
            {{name}}
            <label class="toggle toggle-balanced">
-             <input type="checkbox" {{hasLight}}>
+             <input id="{{id}}" name="light" value="{{id}}" type="checkbox" {{hasLight}}>
              <div class="track">
                <div class="handle"></div>
              </div>
@@ -89,20 +92,23 @@
       </div>
     </div>
     <p>&nbsp;</p>
-    <div class="padding">
-      <button class="button button-block button-positive">Create Group</button>
+    <div class="padding button-bar">
+      <a class="button button-positive submit-group">{{#if group}}Edit Group{{else}}Create Group{{/if}}</a>
+      <a class="button button-assertive cancel">Cancel</a>
     </div>
 </template>
 
 <template name="lightList">
-  <div class="list list-inset" id="light-list">
-    {{#each lights}}
-      <div class="item">
-      	<i class="icon ion-ios-lightbulb-outline"></i>
-      	<span href="" data-id="{{id}}">{{name}}</span>
-      	</div>
-    {{/each}}
-  </div>
+  <ion-scroll delegate-handle="taskScroll" direction="y">
+    <div class="list list-inset" id="light-list">
+      {{#each lights}}
+        <div class="item">
+        	<i class="icon ion-ios-lightbulb-outline"></i>
+        	<span href="" data-id="{{id}}">{{name}}</span>
+        	</div>
+      {{/each}}
+    </div>
+  </ion-scroll>  
 </template>
 
 <template name="bulbPanel">

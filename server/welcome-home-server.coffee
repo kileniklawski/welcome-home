@@ -25,7 +25,6 @@ Meteor.methods
       for k,v of results.data
         v.id = k
         Lights.upsert({id: k}, v)
-        console.log "Lights id: #{k} #{v}"
 
   getGroupsData: ->
     return Meteor.http.call "GET", "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups"
@@ -35,11 +34,21 @@ Meteor.methods
       for k,v of results.data
         v.id = k
         HueGroups.upsert({id: k}, v)
-        console.log "Group id: #{k} #{v}"
 
-  createGroup:  ->
+  createGroup: (data) ->
     url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups"
-    Meteor.http.call "POST", url, {content: JSON.stringify data.state}
+    result = Meteor.http.call "POST", url, {content: JSON.stringify data}
+    console.log (result)
+    console.log(JSON.stringify data)
+    Meteor.call "setGroupsData"
+
+  modifyGroup: (id, data) ->
+    url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups/#{id}"
+    result = Meteor.http.call "PUT", url, {content: JSON.stringify data}  
+    console.log (result)
+    console.log("URL" + url)
+    console.log(JSON.stringify data)
+    Meteor.call "setGroupsData"
 
   allOn: ->
     url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups/0/action"

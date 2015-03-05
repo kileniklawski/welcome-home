@@ -8,3 +8,7 @@ i.splash.ion-home {
 
 // Importing icons
 @import '.meteor/local/build/programs/server/assets/packages/meteoric_ionicons-sass/ionicons';
+
+ion-scroll[direction=y] {
+  height: calc(100vh - 33px - 33px - 90px - 15px);
+}
