@@ -1,0 +1,10 @@
+
+i.splash.ion-home {
+  font-size: 10em;
+  color: #ccc;
+}
+// Then import ionic after. Ionic will use your variables instead of it's own.
+@import '.meteor/local/build/programs/server/assets/packages/meteoric_ionic-sass/ionic';
+
+// Importing icons
+@import '.meteor/local/build/programs/server/assets/packages/meteoric_ionicons-sass/ionicons';

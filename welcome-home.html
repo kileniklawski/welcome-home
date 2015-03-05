@@ -1,0 +1,179 @@
+<head>
+  <title>Welcome Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+ 	<header class="bar bar-header bar-calm">
+  		<h1 class="title">Welcome Home</h1>
+	</header>
+	<div class="content padding has-header">
+	   {{> UI.dynamic template=currentPage}}
+	   <p>&nbsp;</p>  
+	</div>
+	<div class="tabs">
+      <a class="tab-item all-off" href="#">
+        All Off
+      </a>
+      <a class="tab-item icon-left all-on" href="#">
+        All On
+      </a>
+      <a class="tab-item all-default" href="#">
+        Default
+      </a>
+      <a class="tab-item hue-groups" href="#">
+        hueGroups
+      </a>
+    </div>
+</body>
+
+<template name="hueGroupsList">
+  <div class="list list-inset" id="hue-groups-list">
+    <h2>Groups</h2>
+    {{#if hueGroups}}
+      {{#each hueGroups}}
+        <div class="panel">
+          <div class="item item-divider" data-id="{{id}}">
+              Name {{name}}
+          </div>
+          <div class="item range range-calm">
+            <div class="button-bar">
+              <a class="button edit-group" data-id="{{id}}">Edit</a>
+              <a class="button button-assertive delete-group">Delete</a>
+            </div>              
+          </div>
+        </div>
+      {{/each}}
+    {{else}}
+      <div class="bar bar-header bar-energized">
+        <h1 class="title">No groups found</h1>
+      </div>
+      
+      <div class="button-bar">
+        <a class="button button-calm create-group">Create One</a>
+        <a class="button return-home"><i class="icon ion-ios-close-outline"></i></a>
+      </div>
+    {{/if}}
+    <p>&nbsp;</p>
+    <div class="padding">
+      <button class="button button-block button-balanced icon-right">
+        Add a new group<i class="ion-ios-plus-outline"></i>
+      </button>
+    </div>  
+  </div>
+</template>
+
+<template name="hueForm">
+    <div class="content has-header">
+      <div class="item item-divider">
+        Hue Group Name
+        </div>
+      <div class="list">
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Hue Group Name</span>
+          <input type="text" placeholder="Hue Group Name" value="{{#with group}}{{name}}{{/with}}">
+        </label>
+      <ul>
+      {{#each lights}}
+        <li class="item item-toggle">
+           {{name}}
+           <label class="toggle toggle-balanced">
+             <input type="checkbox" {{hasLight}}>
+             <div class="track">
+               <div class="handle"></div>
+             </div>
+           </label>
+        </li>
+        {{/each}}
+        </ul>  
+      </div>
+    </div>
+    <p>&nbsp;</p>
+    <div class="padding">
+      <button class="button button-block button-positive">Create Group</button>
+    </div>
+</template>
+
+<template name="lightList">
+  <div class="list list-inset" id="light-list">
+    {{#each lights}}
+      <div class="item">
+      	<i class="icon ion-ios-lightbulb-outline"></i>
+      	<span href="" data-id="{{id}}">{{name}}</span>
+      	</div>
+    {{/each}}
+  </div>
+</template>
+
+<template name="bulbPanel">
+  {{#with bulb}}
+    <h3>{{name}}</h3>
+    <i class="status fa fa-lightbulb-o {{#if state.reachable}} reachable {{else}} unreachable {{/if}}"></i>
+    <div class="panel">
+    	<div class="item item-divider">
+            Hue
+        </div>
+        <div class="item range range-calm">
+          <input class="hue-range" type="range" min="1" max="65535" value="{{state.hue}}">
+        </div>
+
+		<div class="item item-divider">
+            Saturation
+        </div>
+        <div class="item range range-calm">
+          <input class="saturation-range" type="range" min="0" max="255" value="{{state.sat}}">
+        </div>
+		
+		<div class="item item-divider">
+            Brightness
+        </div>
+        <div class="item range range-calm">
+          <i class="icon ion-ios-lightbulb"></i>
+          <input class="brightness-range" type="range" min="0" max="255" value="{{state.bri}}">
+          <i class="icon ion-ios-lightbulb-outline"></i>
+        </div>
+
+        <p>&nbsp;</p>
+		<div class="button-bar">
+			<a class="button bulb-off"><i class="icon ion-ios-lightbulb"></i></a>
+			<a class="button bulb-on"><i class="icon ion-ios-lightbulb-outline"></i></a>
+			<a class="button bulb-close"><i class="icon ion-ios-close-outline"></i></a>
+			<a class="button bulb-default">Default</a>
+		</div>
+		<p>&nbsp;</p>
+      </div>
+  {{/with}}
+</template>
+
+<template name="welcome">
+
+    <div class="bar bar-header bar-calm">
+  		<h1 class="title">Welcome Home</h1>
+	</div>
+	<div class="content padding has-header">
+	    
+	    <div class="card">
+		  <div class="item item-image">
+		    <i class="icon splash ion-home"></i>
+		  </div>
+		</div>
+		<p>&nbsp;</p>
+			
+	</div>
+
+	<div class="content padding">
+
+		<div class="button-bar">
+		  <a class="button icon-left button-balanced">
+		  	<i class="ion-ios-lightbulb"></i>hue
+		  </a>
+		  <a class="button icon-left button-balanced">
+		  	<i class="ion-disc"></i>nest
+		  </a>
+		</div>
+	</div>
+	
+	<div class="bar bar-footer bar-calm">
+		<div class="title">Configuration</div>
+	</div>
+</template>
