@@ -1,30 +1,43 @@
 <head>
   <title>Welcome Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 
 <body>
- 	<header class="bar bar-header bar-calm">
+<div class="ionic-body grade-a platform-web">
+ 	<div class="bar bar-header bar-calm nav-bar-block nav-bar-transition-ios nav-bar-direction-forward" data-navbar-container="">
   		<h1 class="title">Welcome Home</h1>
-	</header>
-	<div class="content padding has-header">
-	   {{> UI.dynamic template=currentPage}}
-	   <p>&nbsp;</p>  
 	</div>
-	<div class="tabs">
+  <div data-nav-container="" class="nav-view-transition-ios nav-view-direction-forward">
+    <div class="view">
+      <div class="scroll-content ionic-scroll">
+        <div class="content overflow-scroll has-header">
+          {{> UI.dynamic template=currentPage}}  
+        </div>
+      </div>
+    </div>
+  </div>      
+	<div class="tabs-icon-top">
+	  <div class="tabs">
       <a class="tab-item all-off">
+        <i class="icon ion-ios-lightbulb"></i>
         All Off
       </a>
       <a class="tab-item icon-left all-on">
+        <i class="icon ion-ios-lightbulb-outline"></i>
         All On
       </a>
       <a class="tab-item all-default">
+        <i class="icon ion-bookmark"></i>
         Default
       </a>
       <a class="tab-item hue-groups">
+        <i class="icon ion-ios-keypad-outline"></i>
         hueGroups
       </a>
     </div>
+  </div>  
+</div>    
 </body>
 
 <template name="hueGroupsList">
@@ -54,7 +67,6 @@
         <a class="button return-home"><i class="icon ion-ios-close-outline"></i></a>
       </div>
     {{/if}}
-    <p>&nbsp;</p>
     <div class="padding">
       <a class="button new-group button-block button-balanced icon-right">
         Add a new group <i class="ion-ios-plus-outline"></i>
@@ -91,7 +103,6 @@
         </ul>  
       </div>
     </div>
-    <p>&nbsp;</p>
     <div class="padding button-bar">
       <a class="button button-positive submit-group">{{#if group}}Edit Group{{else}}Create Group{{/if}}</a>
       <a class="button button-assertive cancel">Cancel</a>
@@ -139,14 +150,13 @@
           <i class="icon ion-ios-lightbulb-outline"></i>
         </div>
 
-        <p>&nbsp;</p>
+  
 		<div class="button-bar">
 			<a class="button bulb-off"><i class="icon ion-ios-lightbulb"></i></a>
 			<a class="button bulb-on"><i class="icon ion-ios-lightbulb-outline"></i></a>
 			<a class="button bulb-close"><i class="icon ion-ios-close-outline"></i></a>
 			<a class="button bulb-default">Default</a>
 		</div>
-		<p>&nbsp;</p>
       </div>
   {{/with}}
 </template>
@@ -163,7 +173,6 @@
 		    <i class="icon splash ion-home"></i>
 		  </div>
 		</div>
-		<p>&nbsp;</p>
 			
 	</div>
 
