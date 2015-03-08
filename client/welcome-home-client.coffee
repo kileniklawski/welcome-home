@@ -3,18 +3,30 @@ Meteor.subscribe("lights")
 HueGroups = new Mongo.Collection("hueGroups")
 Meteor.subscribe("hueGroups")
 
-Session.set("currentPage", "lightList")
+Session.set("currentPage", "home")
+Session.set("currentTitle", null)
 Session.set("currentBulb", null)
 Session.set("currentGroup", null)
 
 Template.body.helpers
   currentPage: ->
     return Session.get("currentPage")
+  currentTitle: ->
+    return Session.get("currentTitle")
 
 Template.body.events
-  'click header h1': ->
+  'click h1.title': ->
     Session.set("currentBulb", null)
-    Session.set("currentPage", "lightList")
+    Session.set("currentGroup", null)
+    Session.set("currentPage", "home")
+  
+  'click #home': ->
+    Session.set("currentBulb", null)
+    Session.set("currentGroup", null)
+    Session.set("currentPage", "home")
+
+  'click #config':  ->
+    Session.set("currentPage", "hueGroupsList")
 
   'click a.all-on': (evt) ->
     evt.preventDefault()
@@ -26,23 +38,90 @@ Template.body.events
 
   'click a.all-default': (evt) ->
     evt.preventDefault()
-    Meteor.call 'allDefault'
+    Meteor.call 'allDimmed'
 
   'click #light-list div': (evt) ->
     evt.preventDefault()
     Session.set("currentBulb", this.id)
     Session.set("currentPage", "bulbPanel")
+    
+  'click a.hue-lights': (evt) ->
+    Session.set("currentPage", "lightList")
+
+  'click a.new-group': (evt) ->
+    evt.preventDefault()
+    Session.set("currentPage", "hueForm")    
+
+
+Template.home.helpers
+  hueGroups: ->
+    Session.set("currentTitle", "Welcome Home")  
+    return HueGroups.find({}, {sort: {name: 1}})
+
+
+Template.home.events
+  'click a.on-group': (evt) ->
+    evt.preventDefault()
+    Meteor.call "groupOn", this.id 
+
+  'click a.off-group': (evt) ->
+    evt.preventDefault()
+    Meteor.call "groupOff", this.id
+
+  'click a.dimm-group': (evt) ->
+    evt.preventDefault()
+    Meteor.call "groupDimmed", this.id
+
+  'click a.set-group': (evt) ->
+    evt.preventDefault()
+    Session.set("currentGroup", this.id)
+    Session.set("currentPage", "groupPanel")
+
+
+Template.groupPanel.helpers
+  hueGroup: ->
+    Session.set("currentTitle", "Configure Group")
+    return HueGroups.findOne( {id: Session.get("currentGroup")})
+
+
+Template.groupPanel.events
+  'change input[type=range]': ->
+    data = {
+      
+      state: {
+        hue: parseInt($('.hue-range').val(), 10)
+        sat: parseInt($('.saturation-range').val(), 10)
+        bri: parseInt($('.brightness-range').val(), 10)
+      }
+    }
+    Meteor.call "setGroup", Session.get("currentGroup"), data
+
+  'click a.group-on': (evt) ->
+    evt.preventDefault()
+    Meteor.call "groupOn", Session.get("currentGroup")
+
+  'click a.group-off': (evt) ->
+    evt.preventDefault()
+    Meteor.call "groupOff", Session.get("currentGroup")
+
+  'click a.group-dimmed': (evt) ->
+    evt.preventDefault()
+    Meteor.call "groupDimmed", Session.get("currentGroup")
   
-  'click a.hue-groups': (evt) ->
-    Session.set("currentPage", "hueGroupsList")    
+  'click a.group-close': (evt) ->
+    Session.set("currentGroup", null)
+    Session.set("currentPage", "home")    
+
 
 Template.lightList.helpers
   lights: ->
+    Session.set("currentTitle", "Lights List")
     return Lights.find({}, {sort: {name: 1}})
 
 
 Template.bulbPanel.helpers
   bulb: ->
+    Session.set("currentTitle", "Configure Light")
     return Lights.findOne( {id: Session.get("currentBulb")})
 
 Template.bulbPanel.events
@@ -65,24 +144,24 @@ Template.bulbPanel.events
     evt.preventDefault()
     Meteor.call "bulbOff", Session.get("currentBulb")
 
-  'click a.bulb-default': (evt) ->
+  'click a.bulb-dimmed': (evt) ->
     evt.preventDefault()
-    Meteor.call "bulbDefault", Session.get("currentBulb")
+    Meteor.call "bulbDimmed", Session.get("currentBulb")
+  
   'click a.bulb-close': (evt) ->
     Session.set("currentBulb", null)
     Session.set("currentPage", "lightList")
 
 Template.hueGroupsList.helpers
   hueGroups: ->
+    Session.set("currentTitle", "Edit Groups")
     return HueGroups.find({}, {sort: {name: 1}})
 
 Template.hueGroupsList.events
   'click a.return-home': (evt) ->
     evt.preventDefault()
     Session.set("currentPage", "lightList")
-  'click a.new-group': (evt) ->
-    evt.preventDefault()
-    Session.set("currentPage", "hueForm")
+
   'click a.edit-group': (evt) ->
     evt.preventDefault()
     Session.set("currentPage", "hueForm")
@@ -92,6 +171,7 @@ Template.hueGroupsList.events
 
 Template.hueForm.helpers
   group: ->
+    Session.set("currentTitle", "Configure Group")
     return HueGroups.findOne( {id: Session.get("currentGroup")} )
   lights: ->
     return Lights.find({}, {sort: {name: 1}})
@@ -137,4 +217,5 @@ Template.hueForm.events
   'click a.cancel': (evt) ->
     evt.preventDefault()
     Session.set("currentGroup", null)
-    Session.set("currentPage", "lightList")    
+    Session.set("currentPage", "home")
+

@@ -4,9 +4,9 @@ HueGroups = new Mongo.Collection("hueGroups");
 bridge = {}
 bridge.hue_user = "newdeveloper"
 
-defaultState = JSON.stringify({
+dimmedState = JSON.stringify({
   alert: "none", hue: 14922, effect: "none",
-  sat: 60, bri: 254, on: true
+  sat: 60, bri: 80, on: true
 })
 
 onState = JSON.stringify({ on: true })
@@ -50,6 +50,30 @@ Meteor.methods
     console.log(JSON.stringify data)
     Meteor.call "setGroupsData"
 
+  groupOn: (id) ->
+    url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups/#{id}/action"
+    Meteor.http.call "PUT", url, { content: onState }
+    Meteor.call "setGroupsData"
+    Meteor.call "setLightsData"
+
+  groupOff: (id) ->
+    url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups/#{id}/action"
+    Meteor.http.call "PUT", url, { content: offState }
+    Meteor.call "setGroupsData"
+    Meteor.call "setLightsData"
+
+  groupDimmed: (id) ->
+    url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups/#{id}/action"
+    Meteor.http.call "PUT", url, { content: dimmedState }
+    Meteor.call "setGroupsData"
+    Meteor.call "setLightsData"
+
+  setGroup: (id, data) ->
+    url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups/#{id}/action"
+    Meteor.http.call "PUT", url, { content: JSON.stringify data.state }
+    Meteor.call "setGroupsData"
+    Meteor.call "setLightsData"   
+
   allOn: ->
     url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups/0/action"
     Meteor.http.call "PUT", url, { content: onState }
@@ -60,9 +84,9 @@ Meteor.methods
     Meteor.http.call "PUT", url, { content: offState }
     Meteor.call "setLightsData"
 
-  allDefault: ->
+  allDimmed: ->
     url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/groups/0/action"
-    Meteor.http.call "PUT", url, { content: defaultState }
+    Meteor.http.call "PUT", url, { content: dimmedState }
     Meteor.call "setLightsData"
 
 
@@ -76,9 +100,9 @@ Meteor.methods
     Meteor.http.call "PUT", url, { content: offState }
     Meteor.call "setLightsData"
 
-  bulbDefault: (bulb) ->
+  bulbDimmed: (bulb) ->
     url = "http://#{bridge.local_ip}/api/#{bridge.hue_user}/lights/#{bulb}/state"
-    Meteor.http.call "PUT", url, { content: defaultState }
+    Meteor.http.call "PUT", url, { content: dimmedState }
     Meteor.call "setLightsData"
 
   setBulb: (data) ->
