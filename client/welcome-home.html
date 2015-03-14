@@ -2,42 +2,59 @@
   <title>Welcome Home</title>
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <script type="text/javascript" src="http://code.ionicframework.com/1.0.0-beta.14/js/ionic.js"></script>
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
-<div class="ionic-body grade-a platform-web">
- 	<div class="bar bar-header bar-calm nav-bar-block nav-bar-transition-ios nav-bar-direction-forward" data-navbar-container="">
-      <button id="config" class="button icon ion-ios-gear hue-groups"></button>
-      <h1 class="title">{{currentTitle}}</h1>
-      <button id="home" class="button icon ion-home"></button>
-	</div>
-  <div data-nav-container="" class="nav-view-transition-ios nav-view-direction-forward">
-    <div class="view">
-      <div class="scroll-content ionic-scroll">
-        <div class="content overflow-scroll has-header">
-          {{> Template.dynamic template=currentPage}}  
+  <div class="ionic-body grade-a platform-web">
+    <div class="bar bar-header bar-calm nav-bar-block nav-bar-transition-ios nav-bar-direction-forward" data-navbar-container="">
+    <button id="home" class="button icon ion-home"></button>
+    <h1 class="title">{{currentTitle}}</h1>
+    <button id="config" class="button icon ion-ios-gear hue-groups"></button>
+  </div>
+    <div data-nav-container="" class="container nav-view-transition-ios nav-view-direction-forward">
+      <div class="view">
+        <div class="scroll-content ionic-scroll scroll-bg">
+          <div class="content overflow-scroll has-header">
+            {{> Template.dynamic template=currentPage}}  
+          </div>
         </div>
       </div>
-    </div>
-  </div>      
-	  {{> footer_lights}}
-</div>    
+    </div>      
+  	{{> footer_lights }}
+  </div>
 </body>
 
 <template name="footer_lights">
   <div class="tabs-icon-top">
     <div class="tabs"> 
       <a class="tab-item icon-left all-on">
-        <i class="icon ion-ios-lightbulb-outline"></i>
+        <i class="icon ion-ios-lightbulb light-on"></i>
         All On
+      </a>
+      <a class="tab-item all-default">
+        <i class="icon ion-ios-lightbulb-outline dimmed light-dimmed"></i>
+        All Dimmed
       </a>
       <a class="tab-item all-off">
         <i class="icon ion-ios-lightbulb"></i>
         All Off
-      </a>
-      <a class="tab-item all-default">
-        <i class="icon ion-ios-analytics-outline"></i>
-        Dimmed
       </a>
       <a class="tab-item hue-lights">
         <i class="icon ion-ios-keypad-outline"></i>
@@ -47,20 +64,92 @@
   </div>
 </template>
 
+<template name="home">  
+  <div class="list" id="hue-groups-list">
+    
+    {{#if hueGroups}}
+    <div class="home-logo">
+          <div class="item item-image {{currentStatus}}">
+          <object type="image/svg+xml" data="/welcome-home.svg" class="{{currentStatus}}">Your browser does not support SVG</object>
+          <p>Hue Groups</p>
+          </div>
+    </div>
+      {{#each hueGroups}}
+        <div class="panel">
+          <div class="item item-divider" data-id="{{id}}">
+              {{name}}
+          </div>
+          <div class="item">
+            <div class="button-bar">
+              <a class="button on-group light-on">
+                <i class="icon ion-ios-lightbulb"></i>
+              </a>
+              <a class="button dimm-group light-dimmed">
+                <i class="icon ion-ios-lightbulb-outline"></i>
+              </a>
+              <a class="button off-group">
+                <i class="icon ion-ios-lightbulb"></i>
+              </a>
+              <a class="button set-group">
+                <i class="icon ion-toggle-filled"></i>
+              </a>
+            </div>              
+          </div>
+        </div>
+      {{/each}}
+    {{else}}
+      {{#if lightsCount}}
+        <div class="home-logo">
+          <div class="item item-image {{currentStatus}}">
+          <object type="image/svg+xml" data="/welcome-home.svg" class="{{currentStatus}}">Your browser does not support SVG</object>
+          <p>Hue Groups</p>
+          </div>
+        </div>
+        <div class="list card">
+        <div class="item item-body">
+          <h2>Hue Lights Found!</h2>
+          <p>Since you have some hue lights registered let's create some Groups.</p>
+          <p>Click on the <i class="icon ion-ios-gear"></i> button at the top bar.</p>
+        </div>
+        </div>  
+      {{else}}
+        <div class="list card">
+        <div class="item item-body">
+          <img class="full-image" src="/pair-bridge.png">
+          <h2>Not Groups or lights have been found</h2>
+          <p>If this is the first time that you run the app remember that the Hue bridge and this App have to be 
+          in the same LAN (Same network). If they are try the following:</p>
+          <p>
+           Let's register this app with your Hue Bridge by pressing the bridge's button. 
+           Then you will have 30 seconds to click on the test button of this screen.
+          </p>
+        </div>
+
+        <div class="item tabs tabs-secondary tabs-icon-left">
+          <a class="tab-item button button-balanced test-bridge">
+            <i class="icon ion-loop"></i>
+            Test
+          </a>
+        </div>
+      </div>
+      {{/if}}
+    {{/if}} 
+  </div>
+</template>
+
 <template name="hueGroupsList">
   <ion-scroll delegate-handle="taskScroll" direction="y">
-  <div class="list list-inset" id="hue-groups-list">
-    <h3>Edit Groups</h3>
+  <div class="list" id="hue-groups-list">
     {{#if hueGroups}}
       {{#each hueGroups}}
         <div class="panel">
           <div class="item item-divider" data-id="{{id}}">
               {{name}}
           </div>
-          <div class="item range range-calm">
+          <div class="item">
             <div class="button-bar">
               <a class="button edit-group" data-id="{{id}}">Edit</a>
-              <a class="button button-assertive delete-group data-id={{id}}">Delete</a>
+              <a class="button button-outline button-assertive delete-group" data-id="{{id}}">Delete</a>
             </div>              
           </div>
         </div>
@@ -76,7 +165,7 @@
       </div>
     {{/if}}
     <div class="padding">
-      <a class="button new-group button-block button-balanced icon-right">
+      <a class="button new-group button-block button-positive icon-right">
         Add a new group <i class="ion-ios-plus-outline"></i>
       </a>
     </div>  
@@ -86,7 +175,7 @@
 
 <template name="groupPanel">
   {{#with hueGroup}}
-    <h3>{{name}}</h3>
+    
     <i class="status fa fa-lightbulb-o {{#if state.reachable}} reachable {{else}} unreachable {{/if}}"></i>
     <div class="panel">
       <div class="item item-divider">
@@ -107,14 +196,25 @@
             Brightness
         </div>
         <div class="item range range-calm">
-          <i class="icon ion-ios-lightbulb"></i>
           <input class="brightness-range" type="range" min="0" max="255" value="{{action.bri}}">
-          <i class="icon ion-ios-lightbulb-outline"></i>
         </div>
+    
+    <div class="item item-divider">
+      Pre-sets
+    </div>
     <div class="button-bar">
+      <a class="button button-energized group-reading">Reading</a>
+      <a class="button button-energized button-outline group-relax">Relax</a>
+      <a class="button button-positive group-concentrate">Concentrate</a>
+      <a class="button button-calm group-energize">Energize</a>
+    </div>
+    <div class="item item-divider">
+      Defaults
+    </div>
+    <div class="button-bar">
+      <a class="button group-on"><i class="icon ion-ios-lightbulb light-on"></i></a>
+      <a class="button group-dimmed"><i class="icon ion-ios-lightbulb-outline light-dimmed"></i></a>
       <a class="button group-off"><i class="icon ion-ios-lightbulb"></i></a>
-      <a class="button group-on"><i class="icon ion-ios-lightbulb-outline"></i></a>
-      <a class="button group-dimmed"><i class="icon ion-ios-analytics-outline"></i></a>
       <a class="button group-close"><i class="icon ion-ios-close-outline"></i></a>
     </div>
       </div>
@@ -160,11 +260,12 @@
 
 <template name="lightList">
   <ion-scroll delegate-handle="taskScroll" direction="y">
-    <div class="list list-inset" id="light-list">
+    <div class="list" id="light-list">
       {{#each lights}}
-        <div class="item">
-        	<i class="icon ion-ios-lightbulb-outline"></i>
-        	<span href="" data-id="{{id}}">{{name}}</span>
+        <div class="item energized">
+        	<a class="button button-block icon icon-left ion-ios-lightbulb" data-id="{{id}}">
+        	{{name}}
+          </a>
         	</div>
       {{/each}}
     </div>
@@ -194,61 +295,14 @@
             Brightness
         </div>
         <div class="item range range-calm">
-          <i class="icon ion-ios-lightbulb"></i>
           <input class="brightness-range" type="range" min="0" max="255" value="{{state.bri}}">
-          <i class="icon ion-ios-lightbulb-outline"></i>
         </div>
 		<div class="button-bar">
-			<a class="button bulb-off"><i class="icon ion-ios-lightbulb"></i></a>
-			<a class="button bulb-on"><i class="icon ion-ios-lightbulb-outline"></i></a>
-			<a class="button bulb-dimmed"><i class="icon ion-ios-analytics-outline"></i></a>
+			<a class="button bulb-on light-on"><i class="icon ion-ios-lightbulb"></i></a>
+			<a class="button bulb-dimmed light-dimmed"><i class="icon ion-ios-lightbulb-outline dimmed"></i></a>
+      <a class="button bulb-off"><i class="icon ion-ios-lightbulb"></i></a>
       <a class="button bulb-close"><i class="icon ion-ios-close-outline"></i></a>
 		</div>
       </div>
   {{/with}}
-</template>
-
-<template name="home">
-
-	
-  <div class="list list-inset" id="hue-groups-list">
-    {{#if hueGroups}}
-      {{#each hueGroups}}
-        <div class="panel">
-          <div class="item item-divider" data-id="{{id}}">
-              {{name}}
-          </div>
-          <div class="item range range-calm">
-            <div class="button-bar">
-              <a class="button on-group" data-id="{{id}}">
-                <i class="icon ion-ios-lightbulb-outline"></i>
-              </a>
-              <a class="button off-group" data-id="{{id}}">
-                <i class="icon ion-ios-lightbulb"></i>
-              </a>
-              <a class="button dimm-group" data-id="{{id}}">
-                <i class="icon ion-ios-analytics-outline"></i>
-              </a>
-              <a class="button set-group">
-                <i class="icon ion-wrench"></i>
-              </a>
-            </div>              
-          </div>
-        </div>
-      {{/each}}
-    {{/if}} 
-  </div>
-
-	<!-- <div class="content padding">
-
-		<div class="button-bar">
-		  <a class="button icon-left button-balanced">
-		  	<i class="ion-ios-lightbulb"></i>hue
-		  </a>
-		  <a class="button icon-left button-balanced">
-		  	<i class="ion-disc"></i>nest
-		  </a>
-		</div>
-	</div> -->
-	
 </template>

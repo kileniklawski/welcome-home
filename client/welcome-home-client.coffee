@@ -7,7 +7,31 @@ Session.set("currentPage", "home")
 Session.set("currentTitle", null)
 Session.set("currentBulb", null)
 Session.set("currentGroup", null)
+Session.set("homeStatus", "home-dimmed")
 
+# Temporary Presets
+# pendant: setup proper Scenes
+reading = JSON.stringify({
+  alert: "none", hue: 15329, effect: "none",
+  sat: 121, bri: 240, on: true
+})
+
+concentrate = JSON.stringify({
+  alert: "none", hue: 219, effect: "none",
+  sat: 44, bri: 219, on: true
+})
+
+energize = JSON.stringify({
+  alert: "none", hue: 34494, effect: "none",
+  sat: 232, bri: 203, on: true
+})
+
+relax = JSON.stringify({
+  alert: "none", hue: 13088, effect: "none",
+  sat: 213, bri: 216, on: true
+})
+
+# Templates
 Template.body.helpers
   currentPage: ->
     return Session.get("currentPage")
@@ -30,14 +54,17 @@ Template.body.events
 
   'click a.all-on': (evt) ->
     evt.preventDefault()
+    Session.set("homeStatus", "home-on")
     Meteor.call 'allOn'
 
   'click a.all-off': (evt) ->
     evt.preventDefault()
+    Session.set("homeStatus", "home-off")
     Meteor.call 'allOff'
 
   'click a.all-default': (evt) ->
     evt.preventDefault()
+    Session.set("homeStatus", "home-dimmed")
     Meteor.call 'allDimmed'
 
   'click #light-list div': (evt) ->
@@ -52,24 +79,33 @@ Template.body.events
     evt.preventDefault()
     Session.set("currentPage", "hueForm")    
 
-
 Template.home.helpers
   hueGroups: ->
-    Session.set("currentTitle", "Welcome Home")  
-    return HueGroups.find({}, {sort: {name: 1}})
+    Session.set("currentTitle", "Welcome Home")
+    hg =  HueGroups.find({}, {sort: {name: 1}})
+    return if hg.count() is 0 then null else hg
+  lightsCount: ->
+    count = Lights.find().count()
+    return if count is 0 then null else count
+
+  currentStatus: ->
+    return Session.get("homeStatus")  
 
 
 Template.home.events
   'click a.on-group': (evt) ->
     evt.preventDefault()
+    Session.set("homeStatus", "home-on")
     Meteor.call "groupOn", this.id 
 
   'click a.off-group': (evt) ->
     evt.preventDefault()
+    Session.set("homeStatus", "home-off")
     Meteor.call "groupOff", this.id
 
   'click a.dimm-group': (evt) ->
     evt.preventDefault()
+    Session.set("homeStatus", "home-dimmed")
     Meteor.call "groupDimmed", this.id
 
   'click a.set-group': (evt) ->
@@ -77,11 +113,16 @@ Template.home.events
     Session.set("currentGroup", this.id)
     Session.set("currentPage", "groupPanel")
 
+  'click a.test-bridge': (evt) ->
+    evt.preventDefault()
+    Meteor.call "registerApp"  
+
 
 Template.groupPanel.helpers
   hueGroup: ->
-    Session.set("currentTitle", "Configure Group")
-    return HueGroups.findOne( {id: Session.get("currentGroup")})
+    hueGroup = HueGroups.findOne( {id: Session.get("currentGroup")})
+    Session.set("currentTitle", hueGroup.name + " - Group")
+    return hueGroup
 
 
 Template.groupPanel.events
@@ -98,19 +139,42 @@ Template.groupPanel.events
 
   'click a.group-on': (evt) ->
     evt.preventDefault()
+    Session.set("homeStatus", "home-on")
     Meteor.call "groupOn", Session.get("currentGroup")
 
   'click a.group-off': (evt) ->
     evt.preventDefault()
+    Session.set("homeStatus", "home-off")
     Meteor.call "groupOff", Session.get("currentGroup")
 
   'click a.group-dimmed': (evt) ->
     evt.preventDefault()
+    Session.set("homeStatus", "home-dimmed")
     Meteor.call "groupDimmed", Session.get("currentGroup")
   
   'click a.group-close': (evt) ->
     Session.set("currentGroup", null)
-    Session.set("currentPage", "home")    
+    Session.set("currentPage", "home")
+
+  'click a.group-reading': (evt) ->
+    evt.preventDefault()
+    Session.set("homeStatus", "home-on")
+    Meteor.call "groupScene", Session.get("currentGroup"), reading
+
+  'click a.group-relax': (evt) ->
+    evt.preventDefault()
+    Session.set("homeStatus", "home-on")
+    Meteor.call "groupScene", Session.get("currentGroup"), relax
+
+  'click a.group-energize': (evt) ->
+    evt.preventDefault()
+    Session.set("homeStatus", "home-on")
+    Meteor.call "groupScene", Session.get("currentGroup"), energize  
+
+  'click a.group-concentrate': (evt) ->
+    evt.preventDefault()
+    Session.set("homeStatus", "home-on")
+    Meteor.call "groupScene", Session.get("currentGroup"), concentrate
 
 
 Template.lightList.helpers
@@ -166,7 +230,10 @@ Template.hueGroupsList.events
     evt.preventDefault()
     Session.set("currentPage", "hueForm")
     Session.set("currentGroup", this.id)
-    console.log ("Setting currentGroup to: " + Session.get("currentGroup"))
+
+  'click a.delete-group': (evt) ->
+    evt.preventDefault()
+    Meteor.call "deleteGroup", this.id 
 
 
 Template.hueForm.helpers
@@ -178,7 +245,6 @@ Template.hueForm.helpers
   hasLight: ->
     if Session.get("currentGroup") isnt null
       g = HueGroups.findOne( {id: Session.get("currentGroup")} )
-      console.log ( "ID " + this.id + " Name " + this.name + " GL " + g.lights + " Session: " + Session.get("currentGroup"))
       return if _.contains(g.lights, this.id) then 'checked' else ''
     else
       return ""  
@@ -189,24 +255,15 @@ Template.hueForm.events
     groupName = template.find("input[type=text]") ? ""
 
     if groupName.value isnt ""
-      console.log("GroupName: " + groupName.value)
-      console.log("%j", groupName)
       bulbsSelected = template.findAll( "input[type=checkbox]:checked")
       bulbsArray = _.map bulbsSelected, (item) -> item.id
-      console.log("ID " + Session.get("currentGroup"))
-      console.log(bulbsArray);
-      # console.log ("Lights[]: " + bulbsSelected)
-      console.log("%j", bulbsSelected)
       data = {
         name: groupName.value
         lights: bulbsArray
       }
-      console.log("%j", data)
       if Session.get("currentGroup") isnt null
-        console.log("Call Modify - Group ID" + Session.get("currentGroup"))
         Meteor.call "modifyGroup", Session.get("currentGroup"), data
       else
-        console.log("Call New")
         Meteor.call "createGroup", data
       evt.preventDefault()
       Session.set("currentGroup", null)
@@ -217,5 +274,5 @@ Template.hueForm.events
   'click a.cancel': (evt) ->
     evt.preventDefault()
     Session.set("currentGroup", null)
-    Session.set("currentPage", "home")
+    Session.set("currentPage", "hueGroupsList")
 

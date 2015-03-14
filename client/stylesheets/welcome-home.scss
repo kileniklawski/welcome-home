@@ -1,18 +1,97 @@
+/*
+To customize the look and feel of Ionic, you can override the variables
+in Ionic's _variables.scss file.
+For example, you might change some of the default colors:
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #4a87ee !default;
+$calm:                            #43cee6 !default;
+$balanced:                        #66cc33 !default;
+$energized:                       #f0b840 !default;
+$assertive:                       #ef4e3a !default;
+$royal:                           #8a6de9 !default;
+$dark:                            #444 !default;
+*/
 
-i.splash.ion-home {
-  font-size: 10em;
-  color: #ccc;
-}
+$calm:							#0e71b8 !default;
+
 // Then import ionic after. Ionic will use your variables instead of it's own.
 @import '.meteor/local/build/programs/server/assets/packages/meteoric_ionic-sass/ionic';
 
 // Importing icons
 @import '.meteor/local/build/programs/server/assets/packages/meteoric_ionicons-sass/ionicons';
 
-// ion-scroll[direction=y] {
-//   height: calc(100vh - 33px - 33px - 90px - 15px);
-// }
-
+// container scroll out of footer
 .has-header {
-	bottom: 64px;
+	bottom: 52px;
 }
+
+// Hose Status and Styles
+.home-logo object {
+	width: 150px;
+	height: 150px;
+	margin: 10px;
+	padding: 10px;
+}
+
+.home-on {
+	background-color: #fecb36;
+}
+
+.home-dimmed {
+	background-color: #eaeaea;
+}
+
+.home-off {
+	background-color: #999;
+}
+
+// footer text-color
+.tabs, .button {
+	color: #455A64;
+}
+
+// Bulbs colors
+.light-on {
+	color: #D5902E;
+}
+
+.light-on:hover {
+	color: #F3A535;
+}
+
+.light-dimmed {
+	color: #999;
+}
+
+// Background for Hue sliders
+input[type=range] {
+    -webkit-appearance: none !important;
+    border: none;
+    background-color: #bdc3c7;
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-size: 100% 40px;
+    display: inline-block;
+    float: left;
+    height: 40px;
+    width: 100%;
+    &.hue-range {
+        background-image: url(/ranges/spectrum.png);
+    }
+    &.saturation-range {
+        background-image: url(/ranges/saturation.png);
+    }
+    &.brightness-range {
+        background-image: url(/ranges/brightness.png);
+    }
+}
+
+/* 
+Some interesting colors
+
+fiji #4f8093
+camouflage #ccc8b1
+grass #8BC34A
+gold #aeaca3 
+*/
