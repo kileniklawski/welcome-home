@@ -1,11 +1,12 @@
 Welcome Home - Hue Panel
 ====
 
-A lightweight Meteor.JS Hue lights control panel.
+A lightweight Meteor.JS Phillips Hue lights control panel.
+![](http://magneticore.com/wp-content/uploads/2015/03/WelcomHomeDemo.gif)
 
-###Requirment - Register App
+###App Status
 
-Before you launch Hue Panel you'll need to register the application with your Hue bridge.
+Alpha version: Alpha software can be unstable and could cause crashes.
 
 ###Quick App Install
 
@@ -16,6 +17,13 @@ Otherwise:
 * Install Node: [http://nodejs.org](http://nodejs.org)
 * Install Meteor: `curl https://install.meteor.com | /bin/sh`
 * Open the control panel in your browser: `http://your_local_ip:3000`
+
+![](http://magneticore.com/wp-content/uploads/2015/03/welcome-home.gif)
+
+###Requirement - Hue Bridge
+
+After lauch, the application will perform a initial test to connect to the Hue's bride. Touch the mid button on the bridge and within 30 seconds click on the test button on your browser. After these steps the App will have permission to use your Hue bridge.
+
 
 ###Options for Deploying
 
@@ -30,4 +38,8 @@ Or (much easier) since it will only ever be accessed over the local network, jus
 
 ### Providers/source
 
-Initial implementation by [Kelli Shaver](https://github.com/kellishaver/hue-panel)
+Special thanks to [Kelli Shaver](https://github.com/kellishaver/hue-panel) for the initial implementation.
+
+### License
+
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
